@@ -1,9 +1,11 @@
 package service;
 
-import employeepack.Employee;
+import Employee.Employee;
 import exceptions.EmployeeAlreadyAddedException;
 import exceptions.EmployeeNotFoundException;
 import exceptions.EmployeeStorageIsFullException;
+import exceptions.InvalidDataException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -13,7 +15,11 @@ public class EmployeeService {
     private static final int maxPerson = 10;
     private final Map<String, Employee> employees = new HashMap<>(maxPerson);
 
-    public void add(String firstName, String lastName) {
+    public Employee add(String firstName, String lastName) {
+
+        throwIfInvalidData(firstName, lastName);
+        capitalizeName();
+
         if (employees.size() >= maxPerson) {
             throw new EmployeeStorageIsFullException();
         }
@@ -28,7 +34,12 @@ public class EmployeeService {
 
     }
 
-    public void remove(String firstName, String lastName) {
+    private static void capitalizeName() {
+        Employee.setFirstname(StringUtils.capitalize(Employee.getFirstname().toLowerCase());
+        Employee.setLastname(StringUtils.capitalize(Employee.getLastname().toLowerCase());
+    }
+
+    public Employee remove(String firstName, String lastName) {
         var key = makeKey(firstName, lastName);
         var removed = employees.remove(key);
         if (removed == null) {
@@ -52,6 +63,12 @@ public class EmployeeService {
 
     private static String makeKey(String firstName, String lastName) {
         return (firstName + "_" + lastName).toLowerCase();
+    }
+
+    private static void throwIfInvalidData(String firstName, String lastName) {
+        if (!StringUtils.isAlpha(firstName) || !StringUtils.isAlpha(lastName)) {
+            throw new InvalidDataException();
+        }
     }
 
 

@@ -1,13 +1,21 @@
-package employeepack;
+package Employee;
 
 import java.util.Objects;
 
 public class Employee {
-    private final String firstname;
-    private final String lastname;
+    private  String firstname;
+    private String lastname;
 
     public Employee(String firstname, String lastname) {
         this.firstname = firstname;
+        this.lastname = lastname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setLastname(String lastname) {
         this.lastname = lastname;
     }
 
