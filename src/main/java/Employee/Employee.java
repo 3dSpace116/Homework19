@@ -3,8 +3,10 @@ package Employee;
 import java.util.Objects;
 
 public class Employee {
-    private  String firstname;
+    private String firstname;
     private String lastname;
+    private double salary;
+    private int department;
 
     public Employee(String firstname, String lastname) {
         this.firstname = firstname;
@@ -25,6 +27,22 @@ public class Employee {
 
     public String getLastname() {
         return lastname;
+    }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+    public int getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(int department) {
+        this.department = department;
     }
 
     @Override
