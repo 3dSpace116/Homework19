@@ -1,58 +1,74 @@
 package service;
 
-import employeepack.Employee;
+import Employee.Employee;
 import exceptions.EmployeeAlreadyAddedException;
 import exceptions.EmployeeNotFoundException;
 import exceptions.EmployeeStorageIsFullException;
+import exceptions.InvalidDataException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EmployeeService {
     private static final int maxPerson = 10;
-    private final List<Employee> employees = new ArrayList<>(maxPerson);
+    private final Map<String, Employee> employees = new HashMap<>(maxPerson);
 
-    public void add(String firstName, String lastName) {
+    public Employee add(String firstName, String lastName) {
+
+        throwIfInvalidData(firstName, lastName);
+        capitalizeName();
+
         if (employees.size() >= maxPerson) {
             throw new EmployeeStorageIsFullException();
         }
         Employee employee = new Employee(firstName, lastName);
-        if (employees.contains(employee)) {
+        var key = makeKey(firstName, lastName);
+        if (employees.containsKey(key)) {
             throw new EmployeeAlreadyAddedException();
 
         } else {
-            employees.add(employee);
+            employees.put(key, employee);
         }
 
     }
 
-    public void remove(String firstName, String lastName) {
-        var it = employees.iterator();
-        while (it.hasNext()) {
-            var employee = it.next();
-            if (employee.getFirstname().equals(firstName) && employee.getLastname().equals(lastName)) {
-                it.remove();
-                return;
-            }
+    private static void capitalizeName() {
+        Employee.setFirstname(StringUtils.capitalize(Employee.getFirstname().toLowerCase());
+        Employee.setLastname(StringUtils.capitalize(Employee.getLastname().toLowerCase());
+    }
+
+    public Employee remove(String firstName, String lastName) {
+        var key = makeKey(firstName, lastName);
+        var removed = employees.remove(key);
+        if (removed == null) {
+            throw new EmployeeNotFoundException();
         }
-        throw new EmployeeNotFoundException();
     }
 
     public Employee find(String firstName, String lastName) {
-        for (Employee employee : employees) {
-            if (employee.getFirstname().equals(firstName) && employee.getLastname().equals(lastName)) {
-                return employee;
-            }
+        var key = makeKey(firstName, lastName);
+        var employee = employees.get(key);
+        if (employee != null) {
+            return employee;
+        } else {
+            throw new EmployeeNotFoundException();
         }
-        throw new EmployeeNotFoundException();
     }
 
     public Collection<Employee> getAll() {
-        return Collections.unmodifiableCollection(employees);
+        return Collections.unmodifiableCollection(employees.values());
+    }
+
+    private static String makeKey(String firstName, String lastName) {
+        return (firstName + "_" + lastName).toLowerCase();
+    }
+
+    private static void throwIfInvalidData(String firstName, String lastName) {
+        if (!StringUtils.isAlpha(firstName) || !StringUtils.isAlpha(lastName)) {
+            throw new InvalidDataException();
+        }
     }
 
 
