@@ -12,32 +12,31 @@ import java.util.*;
 
 @Service
 public class EmployeeService {
+
     private static final int maxPerson = 10;
     private final Map<String, Employee> employees = new HashMap<>(maxPerson);
 
     public Employee add(String firstName, String lastName) {
 
         throwIfInvalidData(firstName, lastName);
-        capitalizeName();
+
+      //  firstName=StringUtils.capitalize(firstName.toLowerCase());
+     //   lastName=StringUtils.capitalize((lastName.toLowerCase()));
+
+        Employee employee = new Employee(firstName, lastName, 1, 1000);
+        var key = makeKey(firstName, lastName);
 
         if (employees.size() >= maxPerson) {
             throw new EmployeeStorageIsFullException();
         }
-        Employee employee = new Employee(firstName, lastName);
-        var key = makeKey(firstName, lastName);
         if (employees.containsKey(key)) {
             throw new EmployeeAlreadyAddedException();
-
         } else {
             employees.put(key, employee);
+            return employee;
         }
-
     }
 
-    private static void capitalizeName() {
-        Employee.setFirstname(StringUtils.capitalize(Employee.getFirstname().toLowerCase());
-        Employee.setLastname(StringUtils.capitalize(Employee.getLastname().toLowerCase());
-    }
 
     public Employee remove(String firstName, String lastName) {
         var key = makeKey(firstName, lastName);
@@ -45,6 +44,7 @@ public class EmployeeService {
         if (removed == null) {
             throw new EmployeeNotFoundException();
         }
+        return removed;
     }
 
     public Employee find(String firstName, String lastName) {

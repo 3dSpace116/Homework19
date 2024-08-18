@@ -1,6 +1,7 @@
 package service;
 
 import Employee.Employee;
+import exceptions.EmployeeNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -16,27 +17,35 @@ public class DepartmentService {
         this.employeeService = employeeService;
     }
 
-    public Employee getEmplWithMaxSalary(int department) {
-        return employeeService.getAll().stream()
-                .filter(e -> e.getDepartment() == department)
-                .max(Comparator.comparingDouble(employee -> employee.getSalary()))
-                .orElse(null);
+    public double getEmployeeSalarySum(int department) {
+        return employeeService.getAll().stream().
+                filter(e -> e.getDepartment() == department).
+                mapToDouble(Employee::getSalary).
+                sum();
     }
 
-    public Employee getEmplWithMinSalary(int department) {
+
+    public double getEmplWithMaxSalary(int department) {
         return employeeService.getAll().stream()
                 .filter(e -> e.getDepartment() == department)
-                .min(Comparator.comparingDouble(employee -> employee.getSalary()))
-                .orElse(null);
+                .mapToDouble(Employee::getSalary)
+                .max().orElseThrow(EmployeeNotFoundException::new);
     }
 
-    public List<Employee> getEmployee(int department) {
+    public double getEmplWithMinSalary(int department) {
+        return employeeService.getAll().stream()
+                .filter(e -> e.getDepartment() == department)
+                .mapToDouble(Employee::getSalary)
+                .min().orElseThrow(EmployeeNotFoundException::new);
+    }
+
+    public List<Employee> getEmplSortedByDepartmnt(int department) {
         return employeeService.getAll().stream()
                 .filter(e -> e.getDepartment() == department)
                 .toList();
     }
 
-    public Map<Integer, List<Employee>> getEmplSortedByDepartmnt() {
+    public Map<Integer, List<Employee>> getAllEmployees() {
         return employeeService.getAll().stream()
                 .collect(Collectors.groupingBy(Employee::getDepartment));
     }
