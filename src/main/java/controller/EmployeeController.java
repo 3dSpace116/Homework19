@@ -1,6 +1,6 @@
 package controller;
 
-import employeepack.Employee;
+import Employee.Employee;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +13,7 @@ import java.util.Collection;
 @RequestMapping("/employee")
 public class EmployeeController {
 
-    private final EmployeeService service;
+    private EmployeeService service;
 
     public EmployeeController(EmployeeService service) {
         this.service = service;
